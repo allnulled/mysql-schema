@@ -240,7 +240,7 @@ class MySQLSchema {
 	}
 
 	static format(...args) {
-		return require(__dirname + "/schema-formatter.js")(...args);
+		return require(__dirname + "/formatter.js")(...args);
 	}
 
 	static formatJsonOutput(schema) {

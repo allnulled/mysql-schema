@@ -1,6 +1,7 @@
 #!/usr/bin/env node
+const pkg = require(__dirname + "/../package.json");
 const args = require("yargs")
-	.version(require(__dirname + "/../package.json").version)
+	.version(pkg.version)
 	.option("user", {
 		type: "string",
 		default: undefined,
@@ -51,4 +52,4 @@ const args = require("yargs")
 		default: undefined,
 		describe: "debug",
 	}).argv;
-require(__dirname + "/../src/mysql-schema.js").getSchema(args);
+require(__dirname + "/../" + pkg.main).getSchema(args);

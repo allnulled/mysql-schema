@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "nodemon -x 'npm run test' -w ./src -w ./test/*.test.js",
     "build": "npm run docs && sudo npm link && npm shrinkwrap",
-    "upload": "npm run build && npm run test && read -ep 'Message of the commit: ' text && git add . && git commit -m $text && git push",
+    "upload": "npm run build && npm run test && read -p 'Message of the commit: ' text && git add . && git commit -m $text && git push",
     "docs": "javadoc -i src/*.js -o docs/README.api.md -f markdown && concat docs/README.ini.md docs/README.api.md docs/README.end.md -o README.md",
     "test": "mocha test/**/*.test.js"
   },

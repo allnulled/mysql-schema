@@ -2,7 +2,7 @@ require("dotenv").config({ path: __dirname + "/.env.test" });
 const exec = require("execute-command-sync");
 const { expect } = require("chai");
 const rimraf = require("rimraf");
-const MySQLSchema = require(__dirname + "/../src/mysql-schema.js");
+const MySQLSchema = require(__dirname + "/../src/index.js");
 
 describe("MySQLSchema class", function() {
 
