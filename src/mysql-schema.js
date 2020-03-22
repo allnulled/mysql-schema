@@ -251,7 +251,16 @@ class MySQLSchema {
 		return `module.exports = ${this.stringifyFn(schema, 2)};`;
 	}
 
-	static stringifyFn(obj, tab = 4) {
+	/**
+	 * 
+	 * ### `MySQLSchema.stringifyFn(value:Object, spaces:Number):String`
+	 * 
+	 * @description Like `JSON.stringify`, but with a replacer that 
+	 * converts to JavaScript instead, accepting `Function`, `RegExp`
+	 * and `Date` objects as native data.
+	 * 
+	 */
+	static stringifyFn(obj, tab = 2) {
 		return JsStringify(obj, function(value, indent, stringify) {
 			if(typeof value === "function") {
 				return value.toString();

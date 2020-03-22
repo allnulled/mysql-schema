@@ -45,3 +45,14 @@ Master class of the `mysql-schema` API.
 
 
 
+
+### `MySQLSchema.stringifyFn(value:Object, spaces:Number):String`
+
+
+
+**Description**:  Like `JSON.stringify`, but with a replacer that 
+converts to JavaScript instead, accepting `Function`, `RegExp`
+and `Date` objects as native data.
+
+
+

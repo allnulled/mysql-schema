@@ -53,4 +53,6 @@ require("mysql-schema").getSchema({
 })
 ```
 
+## API reference
+
 

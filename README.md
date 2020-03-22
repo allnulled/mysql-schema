@@ -53,6 +53,8 @@ require("mysql-schema").getSchema({
 })
 ```
 
+## API reference
+
 
 
 
@@ -99,6 +101,17 @@ Master class of the `mysql-schema` API.
        - *usage:*        flag to output a JSON file. As JSON, functions, regex and dates are lost as genuine types in the exportation.
    - `output`:         `string` - destination of the file with the schema
        - *default:*      **`process.env.DB_SCHEMA`** or `false`
+
+
+
+
+### `MySQLSchema.stringifyFn(value:Object, spaces:Number):String`
+
+
+
+**Description**:  Like `JSON.stringify`, but with a replacer that 
+converts to JavaScript instead, accepting `Function`, `RegExp`
+and `Date` objects as native data.
 
 
 
