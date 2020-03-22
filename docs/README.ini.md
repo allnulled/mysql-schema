@@ -24,15 +24,15 @@ This is a short explanation of how the CLI works.
 
 ```bash
 $ mysql-schema
-	[--user]           root                           # database user                 = process.env.DB_USER           || 'root'
-	[--password]       root123                        # database user password        = process.env.DB_PASSWORD       || ''
-	[--host]           127.0.0.1                      # database host                 = process.env.DB_HOST           || '127.0.0.1'
-	[--port]           3306                           # database port                 = process.env.DB_PORT           || 3306
-	[--database]       test                           # database name                 = process.env.DB_NAME           || 'test'
-	[--configurations] mysql-schema.configurations.js # database configurations file  = process.env.DB_CONFIGURATIONS || false
-	[--extensions]     mysql-schema.extensions.js     # database schema extensions    = process.env.DB_EXTENSIONS     || false
-	[--as-json]                                       # to generate a json & not a js = false
-	--output           schema.test.js(on)             # output file                   = "schema.${database}.js"
+	[--user]           root               # database user                 = process.env.DB_USER           || 'root'
+	[--password]                          # database user password        = process.env.DB_PASSWORD       || ''
+	[--host]           127.0.0.1          # database host                 = process.env.DB_HOST           || '127.0.0.1'
+	[--port]           3306               # database port                 = process.env.DB_PORT           || 3306
+	[--database]       test               # database name                 = process.env.DB_NAME           || 'test'
+	[--configurations]                    # database configurations file  = process.env.DB_CONFIGURATIONS || false
+	[--extensions]                        # database schema extensions    = process.env.DB_EXTENSIONS     || false
+	[--as-json]                           # to generate a json & not a js = false
+	--output           schema.{db}.js     # output file                   = "schema.${database}.js"
 ```
 
 ### API usage
