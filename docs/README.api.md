@@ -16,7 +16,7 @@ Master class of the `mysql-schema` API.
 **Description**:  Generates a schema representing the MySQL database pointing.
 
 
-**Parameter**:  `options` - object with:
+**Parameter**:  `options` - object with properties (all of them optional):
 
    - `user`:           `string` - user of the database.
        - **default:** `process.env.DB_USER` or `"root"`
