@@ -12,7 +12,7 @@ To generate schema definitions of MySQL databases automatically.
 
 To abstract your code and repeat things the least possible.
 
-Note that if your code depends on the structure of the data (and not on the data itself), then you are coding for any database.
+When you care about the shape, content relies on you. *Be water.*
 
 ## Usage
 
