@@ -1,3 +1,54 @@
 #!/usr/bin/env node
-
-console.log("mysql-schema! Hooray!")
+const args = require("yargs")
+	.version(require(__dirname + "/../package.json").version)
+	.option("user", {
+		type: "string",
+		default: undefined,
+		describe: "db user",
+	})
+	.option("password", {
+		type: "string",
+		default: undefined,
+		describe: "db user password",
+	})
+	.option("host", {
+		type: "string",
+		default: undefined,
+		describe: "db host",
+	})
+	.option("port", {
+		type: "string",
+		default: undefined,
+		describe: "db host",
+	})
+	.option("database", {
+		type: "string",
+		default: undefined,
+		describe: "db name",
+	})
+	.option("as-json", {
+		type: "boolean",
+		default: undefined,
+		describe: "output json, no js",
+	})
+	.option("output", {
+		type: "string",
+		default: undefined,
+		describe: "output file",
+	})
+	.option("configurations", {
+		type: "string",
+		default: undefined,
+		describe: "config file (overrides)",
+	})
+	.option("extensions", {
+		type: "string",
+		default: undefined,
+		describe: "extensions file",
+	})
+	.option("debug", {
+		type: "boolean",
+		default: undefined,
+		describe: "debug",
+	}).argv;
+require(__dirname + "/../src/mysql-schema.js").getSchema(args);
