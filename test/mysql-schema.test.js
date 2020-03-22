@@ -10,6 +10,8 @@ describe("MySQLSchema class", function() {
 		rimraf.sync(__dirname + "/schema.database.1.js");
 		rimraf.sync(__dirname + "/schema.database.2.js");
 		rimraf.sync(__dirname + "/schema.database.fn.js");
+		rimraf.sync(__dirname + `/../schema.${process.env.DB_NAME}.json`);
+		rimraf.sync(__dirname + `/../schema.${process.env.DB_NAME}.js`);
 	})
 
 	it("generates schema by API", async function() {
@@ -52,6 +54,40 @@ describe("MySQLSchema class", function() {
 			const schemaSource = require(__dirname + "/schema.database.fn.js");
 			expect(schemaSource.someFunction(1,2,3)).to.equal(6);
 			expect(schema.someFunction(1,2,3)).to.equal(6);
+		} catch(error) {
+			console.log(error);
+			throw error;
+		}
+	});
+
+	it("allows json and default filename", async function() {
+		try {
+			const schema = await MySQLSchema.getSchema({
+				asJson: true,
+			}, {
+				general: {
+					someNumber: 500,
+					someFunction: (a,b,c) => a+b+c
+				}
+			});
+			const schemaOutput = require(__dirname + `/../schema.${process.env.DB_NAME}.json`);
+			expect(typeof schemaOutput.someFunction).to.equal("undefined");
+		} catch(error) {
+			console.log(error);
+			throw error;
+		}
+	});
+
+	it("allows js and default filename", async function() {
+		try {
+			const schema = await MySQLSchema.getSchema({}, {
+				general: {
+					someNumber: 500,
+					someFunction: (a,b,c) => a+b+c
+				}
+			});
+			const schemaOutput = require(__dirname + `/../schema.${process.env.DB_NAME}.js`);
+			expect(typeof schemaOutput.someFunction).to.equal("function");
 		} catch(error) {
 			console.log(error);
 			throw error;

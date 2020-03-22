@@ -117,54 +117,60 @@ class MySQLSchema {
 	 * @parameter `options` - object with properties (all of them optional):
 	 * 
 	 *    - `user`:           `string` - user of the database
-	 *        - default: **`process.env.DB_USER`** or `"root"`
+	 *        - *default:*      **`process.env.DB_USER`** or `"root"`
 	 *    - `password`:       `string` - password of the database
-	 *        - default: **`process.env.DB_PASSWORD`** or `""`
+	 *        - *default:*      **`process.env.DB_PASSWORD`** or `""`
 	 *    - `host`:           `string` - host of the database
-	 *        - default: **`process.env.DB_HOST`** or `"127.0.0.1"`
+	 *        - *default:*      **`process.env.DB_HOST`** or `"127.0.0.1"`
 	 *    - `port`:           `string` - port of the database
-	 *        - default: **`process.env.DB_PORT`** or `3306`
+	 *        - *default:*      **`process.env.DB_PORT`** or `3306`
 	 *    - `database`:       `string` - name of the database
-	 *        - default: **`process.env.DB_NAME`** or `"test"`
+	 *        - *default:*      **`process.env.DB_NAME`** or `"test"`
 	 *    - `configurations`: `string` - configurations file for the database (overrides the other parameters)
-	 *        - default: **`process.env.DB_CONFIGURATIONS`** or `false`
+	 *        - *default:*      **`process.env.DB_CONFIGURATIONS`** or `false`
+	 *        - *usage:*        object that allows to set the same database configuration from an external file.
 	 *    - `extensions`:     `string` - extensions file for the generation
-	 *        - default: **`process.env.DB_EXTENSIONS`** or `false`
+	 *        - *default:*      **`process.env.DB_EXTENSIONS`** or `false`
+	 *        - *usage:* object that allows to extend the schema:
+	 *            - `perTable`:      filled with nested table, column, and extension properties.
+	 *            - `perColumn`:     filled with nested column, and extension properties.
+	 *            - in `general`:    filled with extension properties.
 	 *    - `asJson`:         `boolean` - flag to output a `json` instead of a `js` file
-	 *        - default: `false`
+	 *        - *default:*      `false`
+	 *        - *usage:*        flag to output a JSON file. As JSON, functions, regex and dates are lost as genuine types in the exportation.
 	 *    - `output`:         `string` - destination of the file with the schema
-	 *        - default: **`process.env.DB_SCHEMA`** or `false`
+	 *        - *default:*      **`process.env.DB_SCHEMA`** or `false`
 	 * 
 	 */
 	static getSchema(passedOptions = {}, passedExtensions = {}) {
-		let __options, __extensions, __connection;
+		let USEROPTIONS, USEREXTENSIONS, CONNECTION;
 		return new Promise((ok, fail) => {
-			__options = Object.assign({}, this.DEFAULT_OPTIONS(), passedOptions);
-			if (__options.configurations) {
-				Object.assign(__options, require(__options.configurations));
+			USEROPTIONS = Object.assign({}, this.DEFAULT_OPTIONS(), passedOptions);
+			if (USEROPTIONS.configurations) {
+				Object.assign(USEROPTIONS, require(USEROPTIONS.configurations));
 			}
-			__extensions = Object.assign({}, this.DEFAULT_EXTENSIONS(), passedExtensions);
-			if (__options.__extensions) {
-				Object.assign(__extensions, require(__options.__extensions));
+			USEREXTENSIONS = Object.assign({}, this.DEFAULT_EXTENSIONS(), passedExtensions);
+			if (USEROPTIONS.USEREXTENSIONS) {
+				Object.assign(USEREXTENSIONS, require(USEROPTIONS.USEREXTENSIONS));
 			}
-			if (__options.envFile) {
+			if (USEROPTIONS.envFile) {
 				require("dotenv").config({
-					path: __options.envFile
+					path: USEROPTIONS.envFile
 				});
 			}
-			if(__options.debug) {
+			if(USEROPTIONS.debug) {
 				debug("Opening connection...");
 			}
-			const query = this.GET_QUERY(__options);
-			const queryForConstraints = this.GET_QUERY_FOR_CONSTRAINTS(__options);
-			__connection = this.getConnection(__options);
+			const query = this.GET_QUERY(USEROPTIONS);
+			const queryForConstraints = this.GET_QUERY_FOR_CONSTRAINTS(USEROPTIONS);
+			CONNECTION = this.getConnection(USEROPTIONS);
 			let index = 0;
 			const schema = {};
-			if(__options.debug) {
+			if(USEROPTIONS.debug) {
 				debug("Querying constraints...");
 				debug(queryForConstraints);
 			}
-			__connection.query(queryForConstraints, (error, data) => {
+			CONNECTION.query(queryForConstraints, (error, data) => {
 				if (error) {
 					debugError("error generating schema constraints");
 					debugError(error);
@@ -174,11 +180,11 @@ class MySQLSchema {
 				index++;
 				if (index === 2) ok(schema);
 			});
-			if(__options.debug) {
+			if(USEROPTIONS.debug) {
 				debug("Querying columns...");
 				debug(query);
 			}
-			__connection.query(query, (error, data) => {
+			CONNECTION.query(query, (error, data) => {
 				if (error) {
 					debugError("error generating schema");
 					debugError(error);
@@ -189,43 +195,42 @@ class MySQLSchema {
 				if (index === 2) ok(schema);
 			});
 		}).then(schema => {
-			if(__options.debug) {
+			if(USEROPTIONS.debug) {
 				debug("Closing connection...");
 			}
-			__connection.end();
+			CONNECTION.end();
 			return schema;
 		}).then(schema => {
-			if(__options.debug) {
+			if(USEROPTIONS.debug) {
 				debug("Formatting result...");
 			}
-			return this.format(schema, __options, __extensions);
+			return this.format(schema, USEROPTIONS, USEREXTENSIONS);
 		}).then(schema => {
 			return new Promise((ok, fail) => {
-				if (__options.output) {
-					if (__options.asJson) {
-						if(__options.debug) {
-							debug("Creating schema.*.json file...");
-						}
-						fs.writeFile(__options.output, this.formatJsonOutput(schema), "utf8", (error) => {
-							if (error) return fail(error);
-							return ok(schema);
-						});
-					} else {
-						if(__options.debug) {
-							debug("Creating schema.*.js file...");
-						}
-						fs.writeFile(__options.output, this.formatJsOutput(schema), "utf8", (error) => {
-							if (error) return fail(error);
-							return ok(schema);
-						});
+				if (!USEROPTIONS.output) {
+					USEROPTIONS.output = `./schema.${USEROPTIONS.database}.${USEROPTIONS.asJson ? "json" : "js"}`;
+				}
+				if (USEROPTIONS.asJson) {
+					if(USEROPTIONS.debug) {
+						debug("Creating schema.*.json file...");
 					}
+					fs.writeFile(USEROPTIONS.output, this.formatJsonOutput(schema), "utf8", (error) => {
+						if (error) return fail(error);
+						return ok(schema);
+					});
 				} else {
-					return ok(schema);
+					if(USEROPTIONS.debug) {
+						debug("Creating schema.*.js file...");
+					}
+					fs.writeFile(USEROPTIONS.output, this.formatJsOutput(schema), "utf8", (error) => {
+						if (error) return fail(error);
+						return ok(schema);
+					});
 				}
 			}).then(schema => {
-				if(__options.debug) {
+				if(USEROPTIONS.debug) {
 					debug("Created file at: ");
-					debug(path.resolve(__options.output));
+					debug(path.resolve(USEROPTIONS.output));
 				}
 				return schema;
 			}).catch(error => {

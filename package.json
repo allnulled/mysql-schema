@@ -13,9 +13,9 @@
     "docs": "javadoc -i src/*.js -o docs/README.api.md -f markdown && concat docs/README.ini.md docs/README.api.md docs/README.end.md -o README.md",
     "test": "mocha test/**/*.test.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["mysql","database","schema","information_schema","generator"],
+  "author": "allnulled",
+  "license": "WTFPL",
   "dependencies": {
     "args": "^5.0.1",
     "debug": "^4.1.1",
