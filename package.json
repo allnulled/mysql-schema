@@ -23,7 +23,6 @@
   "author": "allnulled",
   "license": "WTFPL",
   "dependencies": {
-    "args": "^5.0.1",
     "debug": "^4.1.1",
     "javascript-stringify": "^2.0.1",
     "mysql": "^2.18.1",
