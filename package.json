@@ -1,6 +1,6 @@
 {
   "name": "mysql-schema",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Generate a JSON representing the schema of your MySQL database.",
   "bin": {
     "mysql-schema": "bin/mysql-schema"
