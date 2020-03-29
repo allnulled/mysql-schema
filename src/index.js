@@ -147,11 +147,11 @@ class MySQLSchema {
 		return new Promise((ok, fail) => {
 			USEROPTIONS = Object.assign({}, this.DEFAULT_OPTIONS(), passedOptions);
 			if (USEROPTIONS.configurations) {
-				Object.assign(USEROPTIONS, require(USEROPTIONS.configurations));
+				Object.assign(USEROPTIONS, require(path.resolve(USEROPTIONS.configurations)));
 			}
 			USEREXTENSIONS = Object.assign({}, this.DEFAULT_EXTENSIONS(), passedExtensions);
 			if (USEROPTIONS.USEREXTENSIONS) {
-				Object.assign(USEREXTENSIONS, require(USEROPTIONS.USEREXTENSIONS));
+				Object.assign(USEREXTENSIONS, require(path.resolve(USEROPTIONS.USEREXTENSIONS)));
 			}
 			if (USEROPTIONS.envFile) {
 				require("dotenv").config({
