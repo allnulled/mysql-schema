@@ -9,11 +9,11 @@ const debugError = _debug("mysql-schema:error");
 _debug.enable("mysql-schema");
 
 /**
- * 
+ *
  * ### `const MySQLSchema = require("mysql-schema")`
- * 
+ *
  * Master class of the `mysql-schema` API.
- * 
+ *
  */
 class MySQLSchema {
 
@@ -30,7 +30,7 @@ class MySQLSchema {
 
 	static GET_QUERY_FOR_CONSTRAINTS(options) {
 		return `
-			SELECT 
+			SELECT
 				TABLE_CONSTRAINTS.TABLE_NAME AS '$table',
 				KEY_COLUMN_USAGE.COLUMN_NAME AS '$column',
 				TABLE_CONSTRAINTS.CONSTRAINT_TYPE AS '$constraintType',
@@ -67,11 +67,11 @@ class MySQLSchema {
 			    KEY_COLUMN_USAGE.REFERENCED_TABLE_NAME AS '$referencedTable',
 			    KEY_COLUMN_USAGE.REFERENCED_COLUMN_NAME AS '$referencedColumn'
 			FROM INFORMATION_SCHEMA.TABLES
-			LEFT JOIN INFORMATION_SCHEMA.COLUMNS ON 
+			LEFT JOIN INFORMATION_SCHEMA.COLUMNS ON
 			    COLUMNS.TABLE_SCHEMA = TABLES.TABLE_SCHEMA AND
 			    COLUMNS.TABLE_NAME = TABLES.TABLE_NAME
 			LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE ON
-			    KEY_COLUMN_USAGE.TABLE_SCHEMA = TABLES.TABLE_SCHEMA AND 
+			    KEY_COLUMN_USAGE.TABLE_SCHEMA = TABLES.TABLE_SCHEMA AND
 			    KEY_COLUMN_USAGE.TABLE_NAME = TABLES.TABLE_NAME AND
 			    KEY_COLUMN_USAGE.COLUMN_NAME = COLUMNS.COLUMN_NAME
 			WHERE
@@ -109,13 +109,13 @@ class MySQLSchema {
 	}
 
 	/**
-	 * 
+	 *
 	 * ### `MySQLSchema.getSchema(options:Object):Promise<schema:Object>`
-	 * 
+	 *
 	 * @asynchronous
 	 * @description Generates a schema representing the MySQL database pointing.
 	 * @parameter `options` - object with properties (all of them optional):
-	 * 
+	 *
 	 *    - `user`:           `string` - user of the database
 	 *        - *default:*      **`process.env.DB_USER`** or `"root"`
 	 *    - `password`:       `string` - password of the database
@@ -140,7 +140,7 @@ class MySQLSchema {
 	 *        - *usage:*        flag to output a JSON file. As JSON, functions, regex and dates are lost as genuine types in the exportation.
 	 *    - `output`:         `string` - destination of the file with the schema
 	 *        - *default:*      **`process.env.DB_SCHEMA`** or `false`
-	 * 
+	 *
 	 */
 	static getSchema(passedOptions = {}, passedExtensions = {}) {
 		let USEROPTIONS, USEREXTENSIONS, CONNECTION;
@@ -150,9 +150,10 @@ class MySQLSchema {
 				Object.assign(USEROPTIONS, require(path.resolve(USEROPTIONS.configurations)));
 			}
 			USEREXTENSIONS = Object.assign({}, this.DEFAULT_EXTENSIONS(), passedExtensions);
-			if (USEROPTIONS.USEREXTENSIONS) {
-				Object.assign(USEREXTENSIONS, require(path.resolve(USEROPTIONS.USEREXTENSIONS)));
+			if (USEROPTIONS.extensions) {
+				Object.assign(USEREXTENSIONS, require(path.resolve(USEROPTIONS.extensions)));
 			}
+			USEREXTENSIONS = Object.assign({}, USEREXTENSIONS, passedExtensions);
 			if (USEROPTIONS.envFile) {
 				require("dotenv").config({
 					path: USEROPTIONS.envFile
@@ -252,13 +253,13 @@ class MySQLSchema {
 	}
 
 	/**
-	 * 
+	 *
 	 * ### `MySQLSchema.stringifyFn(value:Object, spaces:Number):String`
-	 * 
-	 * @description Like `JSON.stringify`, but with a replacer that 
+	 *
+	 * @description Like `JSON.stringify`, but with a replacer that
 	 * converts to JavaScript instead, accepting `Function`, `RegExp`
 	 * and `Date` objects as native data.
-	 * 
+	 *
 	 */
 	static stringifyFn(obj, tab = 2) {
 		return JsStringify(obj, function(value, indent, stringify) {
