@@ -77,7 +77,7 @@ class MySQLSchema {
 			WHERE
 			    TABLES.TABLE_SCHEMA = '${options.database}' AND
 			    TABLES.TABLE_TYPE = 'BASE TABLE'
-			ORDER BY TABLES.TABLE_SCHEMA ASC, TABLES.TABLE_NAME ASC, COLUMNS.COLUMN_NAME ASC;`;
+			ORDER BY '$database' ASC, '$table' ASC, '$column' ASC;`;
 	}
 
 	static DEFAULT_OPTIONS() {

@@ -28,11 +28,11 @@ describe("MySQLSchema class", function() {
 	it("generates schema by CLI", function() {
 		try {
 			exec(`./bin/mysql-schema\
-				--user              test\
-				--password          test\
-				--host              localhost\
-				--port              3306\
-				--database          database2\
+				--user              ${process.env.DB_USER}\
+				--password          ${process.env.DB_PASSWORD}\
+				--host              ${process.env.DB_HOST}\
+				--port              ${process.env.DB_PORT}\
+				--database          ${process.env.DB_NAME}\
 				--as-json           false\
 				--output            ./test/schema.database.2.js`, { cwd: __dirname + "/.." });
 			const schemaPredictible = require(__dirname + "/schema.database.1.predictible.js")
