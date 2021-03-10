@@ -119,6 +119,8 @@ const getGeneralInformation = function(mysqlTypeLower, row, table, results) {
 	info.isUnique = row.$boundConstraint === "PRIMARY";
 	info.isForeignKey = false;
 	info.referencesTo = [];
+	info.referencedBy = [];
+	/*
 	for(let index = 0; index < constraints.length; index++) {
 		const constraint = constraints[index];
 		const isSameTable = constraint.$table === row.$table;
@@ -141,7 +143,6 @@ const getGeneralInformation = function(mysqlTypeLower, row, table, results) {
 	///////////////////////////////////////
 	// 7. On any: get referencedBy
 	const { columns } = results;
-	info.referencedBy = [];
 	columns.forEach(column => {
 		const isSameTable = column.$referencedTable === row.$table;
 		const isSameColumn = column.$referencedColumn === row.$column;
@@ -154,6 +155,7 @@ const getGeneralInformation = function(mysqlTypeLower, row, table, results) {
 			});
 		}
 	});
+	//*/
 	return info;
 };
 const createColumnObjectSorted = function(unordered) {
@@ -262,6 +264,7 @@ module.exports = function DefaultSort(results, options, extensions) {
 				});
 				return pks;
 			})();
+			/*
 			const foreignKeys = (() => {
 				const fks = [];
 				attributes.forEach(attributeName => {
@@ -280,6 +283,22 @@ module.exports = function DefaultSort(results, options, extensions) {
 				});
 				return fks;
 			})();
+			//*/
+			///////////////// +>>>>>>>>>>>>>
+			const foreignKeys = [];
+			for(let indexKeys = 0; indexKeys < results.keys.length; indexKeys++) {
+				const keyData = results.keys[indexKeys];
+				const { $constraint, $table, $column, $referencedTable, $referencedColumn } = keyData;
+				if($table === tableName) {
+					modelAttributes[$column].isForeignKey = true;
+					const refData = { constraint: $constraint, column: $column, referencedTable: $referencedTable, referencedColumn: $referencedColumn };
+					modelAttributes[$column].referencesTo.push(refData);
+					foreignKeys.push(refData);
+				}
+				
+			}
+			///////////////// <<<<<<<<<<<<<+
+
 			let additionals = {};
 			if((typeof(extensions.perTable) === "object") && table in extensions.perTable) {
 				additionals = extensions.perTable[table];

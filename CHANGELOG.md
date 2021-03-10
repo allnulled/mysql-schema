@@ -12,3 +12,8 @@ ORDER BY '$database' ASC, '$table' ASC, '$column' ASC;
 
 
 
+
+### Version 1:
+
+- Fixed `MULTIPLE UNIQUE CONSTRAINTS` hiding `FOREIGN KEYS`.
+  (dirty patch but it seemed enough)

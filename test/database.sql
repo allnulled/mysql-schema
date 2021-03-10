@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `database2` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `database2`;
+CREATE DATABASE  IF NOT EXISTS `fresh_database` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `fresh_database`;
 -- MySQL dump 10.13  Distrib 8.0.23, for Linux (x86_64)
 --
--- Host: localhost    Database: database2
+-- Host: localhost    Database: fresh_database
 -- ------------------------------------------------------
 -- Server version	8.0.23-0ubuntu0.20.04.1
 

@@ -80,6 +80,21 @@ class MySQLSchema {
 			ORDER BY '$database' ASC, '$table' ASC, '$column' ASC;`;
 	}
 
+	static GET_QUERY_FOR_KEYS(options) {
+		return `
+			SELECT 
+				INFORMATION_SCHEMA.KEY_COLUMN_USAGE.TABLE_SCHEMA AS '$database',
+				INFORMATION_SCHEMA.KEY_COLUMN_USAGE.TABLE_NAME AS '$table',
+				INFORMATION_SCHEMA.KEY_COLUMN_USAGE.COLUMN_NAME AS '$column',
+				INFORMATION_SCHEMA.KEY_COLUMN_USAGE.CONSTRAINT_NAME AS '$constraint',
+				INFORMATION_SCHEMA.KEY_COLUMN_USAGE.REFERENCED_TABLE_NAME AS '$referencedTable',
+				INFORMATION_SCHEMA.KEY_COLUMN_USAGE.REFERENCED_COLUMN_NAME AS '$referencedColumn'
+			FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+			WHERE INFORMATION_SCHEMA.KEY_COLUMN_USAGE.TABLE_SCHEMA = '${options.database}'
+			AND INFORMATION_SCHEMA.KEY_COLUMN_USAGE.REFERENCED_COLUMN_NAME IS NOT NULL;
+		`;
+	}
+
 	static DEFAULT_OPTIONS() {
 		return {
 			user: process.env.DB_USER,
@@ -164,6 +179,7 @@ class MySQLSchema {
 			}
 			const query = this.GET_QUERY(USEROPTIONS);
 			const queryForConstraints = this.GET_QUERY_FOR_CONSTRAINTS(USEROPTIONS);
+			const queryForKeys = this.GET_QUERY_FOR_KEYS(USEROPTIONS);
 			CONNECTION = this.getConnection(USEROPTIONS);
 			let index = 0;
 			const schema = {};
@@ -179,7 +195,7 @@ class MySQLSchema {
 				}
 				schema.constraints = data;
 				index++;
-				if (index === 2) ok(schema);
+				if (index === 3) ok(schema);
 			});
 			if(USEROPTIONS.debug) {
 				debug("Querying columns...");
@@ -193,7 +209,17 @@ class MySQLSchema {
 				}
 				schema.columns = data;
 				index++;
-				if (index === 2) ok(schema);
+				if (index === 3) ok(schema);
+			});
+			CONNECTION.query(queryForKeys, (error, data) => {
+				if (error) {
+					debugError("error generating keys");
+					debugError(error);
+					return fail(error);
+				}
+				schema.keys = data;
+				index++;
+				if (index === 3) ok(schema);
 			});
 		}).then(schema => {
 			if(USEROPTIONS.debug) {
